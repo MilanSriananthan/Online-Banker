@@ -1,41 +1,37 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
 
-// Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-  interestRate: 1.2, // %
+  owner: 'Milan Sriananthan',
+  movements: [700, 650, -800, 3000, -250, -180, 700, 130],
+  interestRate: 1.75, // %
   pin: 1111,
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Bob Stevens',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
-  pin: 2222,
+  pin: 1000,
 };
 
 const account3 = {
-  owner: 'Steven Thomas Williams',
+  owner: 'Karl Anthoney Towns',
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   interestRate: 0.7,
-  pin: 3333,
+  pin: 1100,
 };
 
 const account4 = {
-  owner: 'Sarah Smith',
+  owner: 'John Cabot',
   movements: [430, 1000, 700, 50, 90],
   interestRate: 1,
-  pin: 4444,
+  pin: 1110,
 };
 
 const accounts = [account1, account2, account3, account4];
 
-// Elements
+
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -63,7 +59,10 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach(function (mov, i) {
+
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -81,7 +80,7 @@ const displayMovements = function (movements, sort = false) {
 const calcPrintBalance = function (acc) {
   const balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
   acc.balance = balance;
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `$${balance}`;
 };
 
 const calcDisplaySummary = function (acc) {
@@ -122,6 +121,14 @@ const updateUI = function (acc) {
 };
 
 let currentAccount;
+
+// const now = new Date();
+// const day = `${now.getDate()}`.padStart(2, 0);
+// const month = `${now.getMonth() + 1}`.padStart(2, 0);
+// const year = now.getFullYear();
+// const hour = now.getHours;
+// const min = now.getMinutes();
+// labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -165,18 +172,17 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
 
-btnLoan.addEventListener("click", function(e){
-  e.preventDefault()
+  const amount = Number(inputLoanAmount.value);
 
-  const amount = Number(inputLoanAmount.value)
-
-  if(amount > 0 %% currentAccount.movements.some(mov => mov >= amount * 0.1)){
-    currentAccount.movements.push(amount)
-    updateUI(currentAccount)
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
   }
-  inputLoanAmount.value = ""
-})
+  inputLoanAmount.value = '';
+});
 
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
@@ -193,22 +199,11 @@ btnClose.addEventListener('click', function (e) {
   }
   inputCloseUsername.value = inputClosePin.value = '';
 });
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
+let sorted = false;
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-/////////////////////////////////////////////////
-
-const euroToUSD = 1.1;
-
-const movementsUSD = movements.map(function (mov) {
-  return mov * euroToUSD;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
 });
